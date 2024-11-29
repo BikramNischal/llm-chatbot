@@ -1,0 +1,32 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "yarn build && node ./dist/index.js",
+    "dev": "nodemon index.ts"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.19",
+    "@langchain/langgraph": "^0.2.23",
+    "@langchain/openai": "^0.3.14",
+    "chromadb": "^1.9.4",
+    "chromadb-default-embed": "^2.13.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "langchain": "^0.3.6",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.7.2",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2"
+  }
+}
