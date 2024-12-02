@@ -1,9 +1,9 @@
 import { Router, Request, Response } from "express";
 import ChatModelController from "../controller/chatmodel.controller";
 
-const ChatRouter = Router();
+const chatRouter = Router();
 
-ChatRouter.get("/", (req: Request, res: Response) => {
+chatRouter.get("/", (req: Request, res: Response) => {
     res.status(200).json({
         success: true,
         message: "Welcome To AI Chat"
@@ -11,7 +11,7 @@ ChatRouter.get("/", (req: Request, res: Response) => {
 })
 
 // handle user prompt
-ChatRouter.post("/message", ChatModelController.handlePostMessage);
+chatRouter.post("/message", ChatModelController.handlePostMessage);
 
 
-export default ChatRouter;
+export default chatRouter;
