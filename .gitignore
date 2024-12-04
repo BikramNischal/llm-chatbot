@@ -91,8 +91,11 @@ out
 .nuxt
 dist
 
-// upload files 
+# upload files 
 assets
+
+# json test files
+test-area
 
 # Gatsby files
 .cache/

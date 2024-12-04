@@ -13,5 +13,7 @@ chatRouter.get("/", (req: Request, res: Response) => {
 // handle user prompt
 chatRouter.post("/message", ChatModelController.handlePostMessage);
 
+chatRouter.post("/prompt", ChatModelController.llmPrompt);
+
 
 export default chatRouter;

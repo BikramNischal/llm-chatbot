@@ -30,7 +30,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/chat", chatRouter);
-
 app.use("/file", fileRouter);
 
 app.listen(port, () => {

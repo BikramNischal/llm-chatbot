@@ -1,18 +1,23 @@
-import { Request, Response, Router } from "express";
+import { Router, Request, Response } from "express";
 import upload from "../config/multer.config";
-import FileOperation from "../service/fileOperation";
+import FileController from "../controller/file.controller";
+import VectorDb from "../service/vectordb";
 
+const fileRouter = Router();
+const vectorStore = new VectorDb("llm-chat-collection-1");
 
-const fileRouter = Router()
+fileRouter.post("/upload", upload.array("files", 5), FileController.upload);
 
-fileRouter.post("/upload", upload.array("files", 5),  async (req: Request, res: Response) => {  
-    const status = FileOperation.uploadFiles(req.files as Express.Multer.File[]) 
+fileRouter.post("/ingest", FileController.ingest);
 
-    res.status(200).json({
-        success: true,
-        message: `File upload success`
-    })
-})
+fileRouter.get("/data", async (req: Request, res: Response) => {
+	await vectorStore.getAll();
+	res.sendStatus(200);
+});
+
+fileRouter.delete("/data", async (req: Request, res: Response) => {
+	await vectorStore.deleteAll();
+	res.sendStatus(200);
+});
 
 export default fileRouter;
-
