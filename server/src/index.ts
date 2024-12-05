@@ -7,6 +7,7 @@ import { dbConnect } from "./service/db";
 
 import chatRouter from "./router/chatmodel.router";
 import fileRouter from "./router/file.router";
+import vectorStoreRouter from "./router/vectorstore.router";
 
 
 const port = parseInt(process.env.EXPRESS_PORT!);
@@ -31,6 +32,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/chat", chatRouter);
 app.use("/file", fileRouter);
+app.use("/vector", vectorStoreRouter);
 
 app.listen(port, () => {
 	console.log(`Express server running at ${port}`);

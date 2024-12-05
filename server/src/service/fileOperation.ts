@@ -6,9 +6,13 @@ import { File } from "../entity/file.entity";
 import VectorDb from "./vectordb";
 
 export default class FileOperation {
-	
-	public static async uploadFiles(files: Express.Multer.File[]) {
+	public static async uploadFiles(files: Express.Multer.File[], collection: string) {
+		// File objects to store on database
 		const uplaodFiles: File[] = [];
+
+		// list of uploaded file paths
+		const filePaths: string[] = []
+
 		files.forEach((file) => {
 			const newFile = new File();
 			newFile.originalName = file.originalname;
@@ -17,42 +21,44 @@ export default class FileOperation {
 			newFile.date = new Date().toISOString().substring(0, 10);
 
 			uplaodFiles.push(newFile);
+			filePaths.push(newFile.path);
 		});
-		return FileDb.storeFiles(uplaodFiles);
+		
+		const fileUpload = await FileDb.storeFiles(uplaodFiles);
+		const fileEmbeddings = FileOperation.embeddFiles(filePaths,collection)
+
+		return (fileUpload && fileEmbeddings);
+
 	}
 
-	public static async parsePdf(fileName: string) {
-		const file: File | null = await FileDb.getFileByName(fileName);
-		if (file) {
-			try {
-				const loader = new PDFLoader(file.path);
-				const docs = await loader.load();
-				return docs;
-			} catch (err) {
-				console.error(
-					`Failed to parse file ${fileName} With Error : ${
-						(err as Error).message
-					}`
-				);
-				return null;
-			}
-		} else {
+	public static async parsePdf(filepath: string) {
+		try {
+			const loader = new PDFLoader(filepath);
+			const docs = await loader.load();
+			return docs;
+		} catch (err) {
 			console.error(
-				`Failed to parse file ${fileName} : No such file found.`
+				`Failed to parse file ${filepath} With Error : ${
+					(err as Error).message
+				}`
 			);
 			return null;
 		}
-	}
+}
 
-	public static async ingestFile(fileName: string, collectionName: string) {
+	public static async embeddFiles(
+		filePaths: string[],
+		collectionName: string
+	) {
 		const vectorStore = new VectorDb(collectionName);
-		const docs = await FileOperation.parsePdf(fileName);
-		if (docs) {
-			await vectorStore.add(docs);
-			return true;
-		} else {
-			return false;
+		for (const filepath of filePaths) {
+			const docs = await FileOperation.parsePdf(filepath);
+			if (docs) {
+				await vectorStore.add(docs);
+			} else {
+				return false;
+			}
 		}
-
+		return true;
 	}
 }

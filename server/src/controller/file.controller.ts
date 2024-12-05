@@ -1,50 +1,25 @@
 import FileOperation from "../service/fileOperation";
 import { Request, Response } from "express";
-import IBaseResponse from "../model/response";
 
 export default class FileController {
 	public static async upload(req: Request, res: Response) {
+		const { collection } = req.body;
+
 		const status = await FileOperation.uploadFiles(
-			req.files as Express.Multer.File[]
+			req.files as Express.Multer.File[],
+			collection
 		);
-		
+
 		if (status) {
 			res.status(200).json({
 				success: status,
-				message: `File upload success`,
+				message: `File upload and embedding success`,
 			});
 		} else {
 			res.status(500).json({
 				success: status,
-				message: `File upload failed`,
+				message: `Failed to upload or embed file!`,
 			});
 		}
 	}
-
-	public static async ingest(req: Request, res: Response) {
-		const { files } = req.body;
-		let response: IBaseResponse = {
-			status: true,
-			message: "File parsed successfuly",
-		};
-
-
-		for (const file of files) {
-			const parse = await FileOperation.ingestFile(file, "llm-chat-collection-1");
-			if (!parse) {
-				response.status = false;
-				break;
-			}
-		}
-
-		if (response.status) {
-			res.status(200).json(response);
-		} else {
-			res.status(500).json({
-				...response,
-				message: "File parsed failed!",
-			});
-		}
-	}
-
 }

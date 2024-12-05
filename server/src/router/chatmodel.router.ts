@@ -15,5 +15,6 @@ chatRouter.post("/message", ChatModelController.handlePostMessage);
 
 chatRouter.post("/prompt", ChatModelController.llmPrompt);
 
+chatRouter.post("/create", ChatModelController.prepareChat);
 
 export default chatRouter;
